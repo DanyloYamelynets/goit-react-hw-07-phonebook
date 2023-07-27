@@ -1,7 +1,6 @@
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './Contacts/ContactList';
-import { nanoid } from 'nanoid';
 import {
   Container,
   PhonebookTitle,
@@ -45,11 +44,7 @@ export default function App() {
     if (checkName) {
       alert(`${name} is already in contacts.`);
     } else {
-      const contact = {
-        id: nanoid(),
-        ...contactData,
-      };
-      dispatch(addContactThunk(contact));
+      dispatch(addContactThunk(contactData));
     }
   };
   const onFilter = filterContacts => {

@@ -8,16 +8,22 @@ import {
   ContactsTitle,
 } from './Container/ContainerStyled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, deleteContact, setFilter } from 'redux/contactsSlice';
+import { setFilter } from 'redux/contactsSlice';
+import {
+  addContactThunk,
+  deleteContactThunk,
+  fetchContactsThunk,
+} from 'redux/operations';
+import { useEffect } from 'react';
 
 export default function App() {
-  const contacts = useSelector(state => {
-    return state.contacts.contacts;
-  });
-  const filter = useSelector(state => {
-    return state.contacts.filter;
-  });
+  const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContactsThunk());
+  }, [dispatch]);
 
   const onAddContact = contactData => {
     const { name } = contactData;
@@ -32,14 +38,14 @@ export default function App() {
         id: nanoid(),
         ...contactData,
       };
-      dispatch(addContact(contact));
+      dispatch(addContactThunk(contact));
     }
   };
   const onFilter = filterContacts => {
     dispatch(setFilter(filterContacts));
   };
   const onDeleteContact = contactId => {
-    dispatch(deleteContact(contactId));
+    dispatch(deleteContactThunk(contactId));
   };
 
   const filteredContacts = contacts.filter(contact =>

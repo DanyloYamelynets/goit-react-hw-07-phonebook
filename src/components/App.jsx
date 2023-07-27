@@ -15,10 +15,21 @@ import {
   fetchContactsThunk,
 } from 'redux/operations';
 import { useEffect } from 'react';
+import Loader from './Loader/Loader';
+import {
+  selectContacts,
+  selectError,
+  selectFilter,
+  selectFilteredContacts,
+  selectIsLoading,
+} from 'redux/selectors';
 
 export default function App() {
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.filter);
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,15 +59,15 @@ export default function App() {
     dispatch(deleteContactThunk(contactId));
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase().trim())
-  );
+  const filteredContacts = useSelector(selectFilteredContacts);
 
   return (
     <Container>
       <PhonebookTitle>Phonebook</PhonebookTitle>
       <ContactForm onAddContact={onAddContact} />
       <ContactsTitle>Contacts</ContactsTitle>
+      {isLoading && <Loader />}
+      {error && <div>Error: {error}</div>}
       <Filter
         filter={filter}
         onFilter={onFilter}
